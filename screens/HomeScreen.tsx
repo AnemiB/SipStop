@@ -1,30 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  SafeAreaView,
-  Dimensions,
-  ActivityIndicator,
-} from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView, Dimensions, ActivityIndicator, } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../types';
 
 import { auth, db } from '../firebase';
-import {
-  collection,
-  query,
-  where,
-  orderBy,
-  limit,
-  onSnapshot,
-  doc,
-  getDoc,
-  Timestamp,
-} from 'firebase/firestore';
+import { collection, query, where, orderBy, limit, onSnapshot, doc, getDoc, Timestamp, } from 'firebase/firestore';
 
 const { height } = Dimensions.get('window');
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'Home'>;
@@ -38,7 +20,6 @@ const HomeScreen = () => {
   const [loadingDrink, setLoadingDrink] = useState(true);
   const [now, setNow] = useState(Timestamp.now());
 
-  // Fetch username once on mount
   useEffect(() => {
     const fetchUsername = async () => {
       const user = auth.currentUser;
@@ -66,7 +47,7 @@ const HomeScreen = () => {
     fetchUsername();
   }, []);
 
-  // Real-time listener for last drink timestamp
+  // Real-time listener for last drink timestamp (only the latest date will show)
   useEffect(() => {
     const user = auth.currentUser;
     if (!user) {

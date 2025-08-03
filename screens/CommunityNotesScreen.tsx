@@ -1,14 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {
-  SafeAreaView,
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  TouchableOpacity,
-  Dimensions,
-  ActivityIndicator,
-} from 'react-native';
+import { SafeAreaView, View, Text, StyleSheet, ScrollView, TouchableOpacity, Dimensions, ActivityIndicator, } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -51,7 +42,6 @@ const CommunityNotesScreen = () => {
           const noteData = docSnap.data();
           let username = noteData.username || 'Anonymous';
 
-          // If no username stored in note, fetch from users collection
           if (!noteData.username && noteData.userId) {
             try {
               const userDoc = await getDoc(doc(db, 'users', noteData.userId));

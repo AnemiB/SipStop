@@ -17,17 +17,16 @@ const SignUpScreen = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
+  // Password handling
   const handleSignUp = async () => {
     if (password !== confirmPassword) {
       Alert.alert("Error", "Passwords do not match");
       return;
     }
     try {
-      // 1. Create user in Firebase Auth
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
 
-      // 2. Create Firestore user document
       await setDoc(doc(db, "users", user.uid), {
         email: email,
         username: username,
@@ -36,7 +35,7 @@ const SignUpScreen = () => {
       });
 
       Alert.alert("Success", "Account created!");
-      navigation.navigate('LogIn'); // Go to login after signup
+      navigation.navigate('LogIn');
     } catch (error: any) {
       Alert.alert("Error", error.message);
     }

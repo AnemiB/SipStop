@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView, Dimensions, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView, Dimensions, } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Ionicons } from '@expo/vector-icons';
 import { Picker } from '@react-native-picker/picker';
@@ -30,13 +30,6 @@ const DrinkScreen = () => {
       newDate.setFullYear(selectedDate.getFullYear());
       newDate.setMonth(selectedDate.getMonth());
       newDate.setDate(selectedDate.getDate());
-
-      // Check if newDate is in the future 
-      if (newDate > now) {
-        Alert.alert('Invalid Date', 'You cannot select a future date.');
-        return;
-      }
-      setDate(newDate);
     }
   };
 

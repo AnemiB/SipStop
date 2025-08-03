@@ -1,33 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import {
-  SafeAreaView,
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  TextInput,
-  TouchableOpacity,
-  Dimensions,
-  Keyboard,
-  Animated,
-  ActivityIndicator,
-} from 'react-native';
+import { SafeAreaView, View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, Dimensions, Keyboard, Animated, ActivityIndicator, } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RouteProp } from '@react-navigation/native';
 import { RootStackParamList } from '../types';
 
-import {
-  doc,
-  collection,
-  getDoc,
-  query,
-  orderBy,
-  onSnapshot,
-  addDoc,
-  serverTimestamp,
-} from 'firebase/firestore';
+import { doc, collection, getDoc, query, orderBy, onSnapshot, addDoc, serverTimestamp, } from 'firebase/firestore';
 import { db } from '../firebase';
 import { getAuth } from 'firebase/auth';
 
@@ -64,7 +43,7 @@ const CommentScreen = () => {
   const { noteId } = route.params;
 
   const [note, setNote] = useState<any | null>(null);
-  const [noteAuthorName, setNoteAuthorName] = useState<string>(''); // store real note author's username
+  const [noteAuthorName, setNoteAuthorName] = useState<string>('');
   const [comments, setComments] = useState<any[]>([]);
   const [newComment, setNewComment] = useState('');
   const [keyboardHeight] = useState(new Animated.Value(BASE_INPUT_BOTTOM));
