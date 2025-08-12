@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { View, Text, ActivityIndicator, StyleSheet } from 'react-native';
+import { View, Text, ActivityIndicator, StyleSheet, TouchableOpacity } from 'react-native';
 import type { Timestamp } from 'firebase/firestore';
 
 // SVG imports
@@ -18,6 +18,8 @@ type Props = {
   loadingDrink?: boolean;
   loadingNote?: boolean;
   messagesOverride?: any;
+  hasNote?: boolean; 
+  onAddNotePress?: () => void;
 };
 
 const goalDaysMap: Record<string, number> = {
@@ -119,8 +121,7 @@ const moodAssetMap = {
   sad: [SadOne, SadTwo],
 };
 
-function formatTimeAgo(diffMs: number, short = false) {
-
+function formatTimeAgo(diffMs: number) {
   const seconds = Math.floor(diffMs / 1000);
   if (seconds < 10) return 'just now';
   if (seconds < 60) {
@@ -162,14 +163,15 @@ const EncouragementCard: React.FC<Props> = ({
   loadingDrink = false,
   loadingNote = false,
   messagesOverride,
+  hasNote = true,
+  onAddNotePress,
 }) => {
   const messages = messagesOverride ?? defaultMessages;
 
   const [fixedMessage, setFixedMessage] = useState<string | null>(null);
-  const [FixedIcon, setFixedIcon] = useState<React.ComponentType<any> | null>(null);
+  const [FixedIcon, setFixedIcon] = useState<React.ComponentType<any> | React.ReactElement<any> | null>(null);
   const [categoryAtChoose, setCategoryAtChoose] = useState<string | null>(null);
 
-  // Compute and freeze message/icon when inputs change
   useEffect(() => {
     if (loadingDrink || loadingNote) {
       setFixedMessage(null);
@@ -180,7 +182,7 @@ const EncouragementCard: React.FC<Props> = ({
 
     if (!lastDrink) {
       setFixedMessage("Welcome! Log your first drink so we can track your progress and cheer you on.");
-      setFixedIcon(NormalOne);
+      setFixedIcon(hasNote ? NormalOne : null);
       setCategoryAtChoose(null);
       return;
     }
@@ -196,7 +198,6 @@ const EncouragementCard: React.FC<Props> = ({
     else if (diffDaysAtChoose < 30) category = 'milestone';
     else category = 'longTerm';
 
-    // Pick a message (goal proximity evaluated at choose-time)
     let selectedPhrase: string | null = null;
     if (lastDrinkMotivation) {
       const goalDays = goalDaysMap[lastDrinkMotivation] ?? null;
@@ -219,7 +220,6 @@ const EncouragementCard: React.FC<Props> = ({
       selectedPhrase = pick(pool) ?? pick((messages as any).default);
     }
 
-    // Mood icon pick, related to last note of user
     const seedBase = (lastDrink?.seconds ?? Math.floor(lastMs / 1000));
     const mood = lastNoteMood ?? 'normal';
     const moodCharSum = Array.from(mood).reduce((s, c) => s + c.charCodeAt(0), 0);
@@ -228,10 +228,9 @@ const EncouragementCard: React.FC<Props> = ({
     const IconComp = (pick(candidates, seed) as any) ?? NormalOne;
 
     setFixedMessage(selectedPhrase);
-    setFixedIcon(() => IconComp);
+    setFixedIcon(hasNote ? IconComp : null);
     setCategoryAtChoose(category);
-
-  }, [lastDrink?.seconds, lastNoteMood, lastDrinkMotivation, messagesOverride, loadingDrink, loadingNote]);
+  }, [lastDrink?.seconds, lastNoteMood, lastDrinkMotivation, messagesOverride, loadingDrink, loadingNote, hasNote]);
 
   const dynamicSuffix = useMemo(() => {
     if (!lastDrink) return '';
@@ -244,7 +243,6 @@ const EncouragementCard: React.FC<Props> = ({
     if (categoryAtChoose === 'relapse') {
       return ` You last had a drink ${human}.`;
     } else {
-
       if (human === 'yesterday' || human === 'just now' || human.includes('hour') || human.includes('minute') || human.includes('second')) {
         return ` You've been sober for ${human.replace(' ago', '')}.`;
       }
@@ -260,14 +258,37 @@ const EncouragementCard: React.FC<Props> = ({
     );
   }
 
-  const Icon = FixedIcon ?? NormalOne;
+  const IconCandidate = FixedIcon ?? NormalOne;
   const displayMessage = (fixedMessage ?? defaultMessages.default[0]) + (lastDrink ? dynamicSuffix : '');
+  const showNotePrompt = hasNote === false && !loadingNote;
+
+  // TS-safe render: cloneElement cast to any to avoid strict unknown(jsx) props error. this is the case for the svg null for new users
+  const renderIcon = () => {
+    if (!IconCandidate) return null;
+
+    if (React.isValidElement(IconCandidate)) {
+      return React.cloneElement(IconCandidate as React.ReactElement<any>, { width: 36, height: 36 } as any);
+    }
+
+    if (typeof IconCandidate === 'function') {
+      const Comp = IconCandidate as React.ComponentType<any>;
+      return <Comp width={36} height={36} />;
+    }
+
+    return null;
+  };
 
   return (
     <View style={styles.card}>
       <View style={styles.row}>
         <View style={styles.iconWrapper}>
-          <Icon width={36} height={36} />
+          {showNotePrompt ? (
+            <View style={styles.placeholder}>
+              <Text style={styles.notePromptText}>Add a note to personalise this emotion</Text>
+            </View>
+          ) : (
+            renderIcon()
+          )}
         </View>
 
         <Text style={styles.text}>{displayMessage}</Text>
@@ -283,9 +304,39 @@ const styles = StyleSheet.create({
     padding: 25,
     marginBottom: 16,
   },
-  row: { flexDirection: 'row', alignItems: 'center' },
-  iconWrapper: { marginRight: 12, width: 44, height: 44, justifyContent: 'center', alignItems: 'center' },
-  text: { color: '#FFF9FB', fontSize: 15, fontWeight: '500', flex: 1 },
+  row: { 
+    flexDirection: 'row', 
+    alignItems: 'center' 
+  },
+  iconWrapper: { 
+    marginRight: 12, 
+    width: 120, height: 44, 
+    justifyContent: 'center', 
+    alignItems: 'flex-start' 
+  },
+  placeholder: { 
+    justifyContent: 'center' 
+  },
+  notePromptText: { 
+    color: '#FFF9FB', 
+    fontSize: 13, 
+    fontWeight: '600' 
+  },
+  addNoteCta: { 
+    marginTop: 6, 
+    backgroundColor: '#A93853', 
+    paddingVertical: 6, 
+    paddingHorizontal: 10, 
+    borderRadius: 12 },
+  addNoteText: { 
+    color: '#FFF9FB', 
+    fontWeight: '700', 
+    fontSize: 12 },
+  text: { 
+    color: '#FFF9FB', 
+    fontSize: 15, 
+    fontWeight: '500', 
+    flex: 1 },
 });
 
 export default EncouragementCard;

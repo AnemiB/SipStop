@@ -23,6 +23,7 @@ const HomeScreen = () => {
   const [loadingUser, setLoadingUser] = useState(true);
   const [loadingDrink, setLoadingDrink] = useState(true);
   const [loadingNote, setLoadingNote] = useState(true);
+  const [hasNote, setHasNote] = useState<boolean>(true); // NEW: explicit flag for whether user has any notes
 
   const [now, setNow] = useState(Timestamp.now());
 
@@ -94,11 +95,12 @@ const HomeScreen = () => {
     return () => unsubscribe();
   }, []);
 
-  // Real-time listener for last note (latest doc) to get mood
+  // Real-time listener for last note (latest doc) to get mood and whether any note exists
   useEffect(() => {
     const user = auth.currentUser;
     if (!user) {
       setLastNoteMood(null);
+      setHasNote(false);
       setLoadingNote(false);
       return;
     }
@@ -121,14 +123,17 @@ const HomeScreen = () => {
           } else {
             setLastNoteMood(null);
           }
+          setHasNote(true);
         } else {
           setLastNoteMood(null);
+          setHasNote(false);
         }
         setLoadingNote(false);
       },
       (error) => {
         console.error('Error fetching last note:', error);
         setLastNoteMood(null);
+        setHasNote(false);
         setLoadingNote(false);
       }
     );
@@ -188,6 +193,8 @@ const HomeScreen = () => {
         now={now}
         loadingDrink={loadingDrink}
         loadingNote={loadingNote}
+        hasNote={hasNote} // pass explicit flag
+        onAddNotePress={() => navigation.navigate('Create')} // CTA from placeholder
       />
 
       <View style={styles.feedbackCard}>
