@@ -284,7 +284,7 @@ const EncouragementCard: React.FC<Props> = ({
         <View style={styles.iconWrapper}>
           {showNotePrompt ? (
             <View style={styles.placeholder}>
-              <Text style={styles.notePromptText}>Add a note to personalise this emotion</Text>
+              <Text style={styles.notePromptText}>Add note</Text>
             </View>
           ) : (
             renderIcon()
@@ -310,7 +310,7 @@ const styles = StyleSheet.create({
   },
   iconWrapper: { 
     marginRight: 12, 
-    width: 120, height: 44, 
+    width: 45, height: 44, 
     justifyContent: 'center', 
     alignItems: 'flex-start' 
   },
@@ -325,8 +325,6 @@ const styles = StyleSheet.create({
   addNoteCta: { 
     marginTop: 6, 
     backgroundColor: '#A93853', 
-    paddingVertical: 6, 
-    paddingHorizontal: 10, 
     borderRadius: 12 },
   addNoteText: { 
     color: '#FFF9FB', 

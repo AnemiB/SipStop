@@ -134,10 +134,15 @@ const CommentScreen = () => {
         }
       }
 
+      // Keep timestamp for local ordering, and add others for collectionGroup listener
       await addDoc(collection(db, 'notes', noteId, 'comments'), {
         user: usernameToUse,
         text: newComment.trim(),
         timestamp: serverTimestamp(),
+        createdAt: serverTimestamp(),
+        noteId,
+        noteOwnerId: note?.userId ?? null,   
+        noteTitle: note?.title ?? null,
       });
       setNewComment('');
     } catch (error) {
@@ -155,7 +160,7 @@ const CommentScreen = () => {
         />
       ) : note ? (
         <View style={styles.card}>
-          <Text style={styles.user}>{noteAuthorName}</Text>
+          <Text style={styles.user}>Anonymous</Text>
           <View style={styles.contentRow}>
             {(() => {
               const moodOption = moodOptions.find(
@@ -205,7 +210,7 @@ const CommentScreen = () => {
           keyboardShouldPersistTaps="handled"
         >
           {comments.length === 0 ? (
-            <Text style={{ textAlign: 'center', color: '#FEEEF1' }}>
+            <Text style={{ textAlign: 'center', color: '#F36285' }}>
               No comments yet. Be the first!
             </Text>
           ) : (

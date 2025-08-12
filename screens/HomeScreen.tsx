@@ -23,7 +23,7 @@ const HomeScreen = () => {
   const [loadingUser, setLoadingUser] = useState(true);
   const [loadingDrink, setLoadingDrink] = useState(true);
   const [loadingNote, setLoadingNote] = useState(true);
-  const [hasNote, setHasNote] = useState<boolean>(true); // NEW: explicit flag for whether user has any notes
+  const [hasNote, setHasNote] = useState<boolean>(true);
 
   const [now, setNow] = useState(Timestamp.now());
 
@@ -54,7 +54,7 @@ const HomeScreen = () => {
     fetchUsername();
   }, []);
 
-  // Real-time listener for last drink (latest doc) - captures motivation field too
+  // Real-time listener for last drink; captures motivation field too
   useEffect(() => {
     const user = auth.currentUser;
     if (!user) {
@@ -95,7 +95,7 @@ const HomeScreen = () => {
     return () => unsubscribe();
   }, []);
 
-  // Real-time listener for last note (latest doc) to get mood and whether any note exists
+  // Real-time listener for last note; get mood and whether any note exists
   useEffect(() => {
     const user = auth.currentUser;
     if (!user) {
@@ -163,7 +163,7 @@ const HomeScreen = () => {
       );
     }
 
-    // note: lastDrink is a Timestamp
+    // Note: lastDrink is a Timestamp
     const diffSeconds = now.seconds - (lastDrink?.seconds ?? 0);
     const days = Math.floor(diffSeconds / 86400);
     const hours = Math.floor((diffSeconds % 86400) / 3600);
@@ -193,8 +193,7 @@ const HomeScreen = () => {
         now={now}
         loadingDrink={loadingDrink}
         loadingNote={loadingNote}
-        hasNote={hasNote} // pass explicit flag
-        onAddNotePress={() => navigation.navigate('Create')} // CTA from placeholder
+        hasNote={hasNote} 
       />
 
       <View style={styles.feedbackCard}>
