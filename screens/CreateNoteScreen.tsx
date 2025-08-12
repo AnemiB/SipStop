@@ -13,7 +13,6 @@ import NormalTwo from '../assets/NormalTwo.svg';
 import SadOne from '../assets/SadOne.svg';
 import SadTwo from '../assets/SadTwo.svg';
 
-// Firebase
 import { db, auth } from '../firebase';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 
@@ -97,7 +96,7 @@ const CreateNoteScreen = () => {
         <TextInput
           style={styles.input}
           placeholder="..."
-          placeholderTextColor="#999"
+          placeholderTextColor="#FEEEF1"
           value={title}
           onChangeText={setTitle}
         />
@@ -106,7 +105,7 @@ const CreateNoteScreen = () => {
         <TextInput
           style={[styles.input, styles.detailsInput]}
           placeholder="..."
-          placeholderTextColor="#999"
+          placeholderTextColor="#FEEEF1"
           multiline
           value={details}
           onChangeText={setDetails}
@@ -155,6 +154,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 20,
     marginBottom: 20,
+    marginTop: 20,
   },
   label: {
     textAlign: 'center',

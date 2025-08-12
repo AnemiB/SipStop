@@ -24,25 +24,27 @@ const DrinkScreen = () => {
   const now = new Date();
 
   const onDateChange = (event: any, selectedDate?: Date) => {
-    setShowDatePicker(false);
-    if (event?.type === 'set' && selectedDate) {
-      const newDate = new Date(date);
-      newDate.setFullYear(selectedDate.getFullYear());
-      newDate.setMonth(selectedDate.getMonth());
-      newDate.setDate(selectedDate.getDate());
-    }
-  };
+  setShowDatePicker(false);
+  if (event?.type === 'set' && selectedDate) {
+    const newDate = new Date(date);
+    newDate.setFullYear(selectedDate.getFullYear());
+    newDate.setMonth(selectedDate.getMonth());
+    newDate.setDate(selectedDate.getDate());
+    setDate(newDate);
+  }
+};
 
-  const onTimeChange = (event: any, selectedTime?: Date) => {
-    setShowTimePicker(false);
-    if (event?.type === 'set' && selectedTime) {
-      const newDate = new Date(date);
-      newDate.setHours(selectedTime.getHours());
-      newDate.setMinutes(selectedTime.getMinutes());
-      newDate.setSeconds(0);
-      newDate.setMilliseconds(0);
-    }
-  };
+const onTimeChange = (event: any, selectedTime?: Date) => {
+  setShowTimePicker(false);
+  if (event?.type === 'set' && selectedTime) {
+    const newDate = new Date(date);
+    newDate.setHours(selectedTime.getHours());
+    newDate.setMinutes(selectedTime.getMinutes());
+    newDate.setSeconds(0);
+    newDate.setMilliseconds(0);
+    setDate(newDate);
+  }
+};
 
   const handleSave = async () => {
     const user = auth.currentUser;

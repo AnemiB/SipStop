@@ -96,7 +96,7 @@ const SettingsScreen = () => {
       <TextInput
         style={styles.input}
         placeholder="..."
-        placeholderTextColor="#999"
+        placeholderTextColor="#FEEEF1"
         value={newUsername}
         onChangeText={setNewUsername}
       />
@@ -105,7 +105,7 @@ const SettingsScreen = () => {
       <TextInput
         style={styles.input}
         placeholder="..."
-        placeholderTextColor="#999"
+        placeholderTextColor="#FEEEF1"
         secureTextEntry
         value={password}
         onChangeText={setPassword}
@@ -115,7 +115,7 @@ const SettingsScreen = () => {
       <TextInput
         style={styles.input}
         placeholder="..."
-        placeholderTextColor="#999"
+        placeholderTextColor="#FEEEF1"
         secureTextEntry
         value={newPassword}
         onChangeText={setNewPassword}
@@ -174,7 +174,7 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     paddingVertical: 10,
     paddingHorizontal: 20,
-    marginBottom: 8,
+    marginBottom: 6,
     fontSize: 14,
     color: '#4A1D23',
   },
@@ -182,7 +182,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#F25077',
     borderRadius: 30,
     paddingVertical: 14,
-    marginTop: 20,
+    marginTop: 35,
     alignItems: 'center',
   },
   signOutButton: {

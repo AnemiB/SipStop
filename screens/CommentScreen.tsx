@@ -205,7 +205,7 @@ const CommentScreen = () => {
           keyboardShouldPersistTaps="handled"
         >
           {comments.length === 0 ? (
-            <Text style={{ textAlign: 'center', color: '#999' }}>
+            <Text style={{ textAlign: 'center', color: '#FEEEF1' }}>
               No comments yet. Be the first!
             </Text>
           ) : (
@@ -265,6 +265,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 16,
     marginBottom: 16,
+    marginTop: 20,
   },
   user: {
     fontSize: 14,
@@ -298,6 +299,7 @@ const styles = StyleSheet.create({
     color: '#4A1D23',
     textAlign: 'center',
     marginBottom: 12,
+    marginTop: 15,
   },
   commentsList: {
     paddingBottom: 20,

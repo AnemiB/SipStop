@@ -4,6 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../types';
+import EncouragementCard from '../components/EncouragementCard';
 
 import { auth, db } from '../firebase';
 import { collection, query, where, orderBy, limit, onSnapshot, doc, getDoc, Timestamp, } from 'firebase/firestore';
@@ -15,9 +16,14 @@ const HomeScreen = () => {
   const navigation = useNavigation<NavigationProp>();
 
   const [lastDrink, setLastDrink] = useState<Timestamp | null>(null);
+  const [lastDrinkMotivation, setLastDrinkMotivation] = useState<string | null>(null);
+  const [lastNoteMood, setLastNoteMood] = useState<'happy' | 'normal' | 'sad' | null>(null);
+
   const [username, setUsername] = useState<string | null>(null);
   const [loadingUser, setLoadingUser] = useState(true);
   const [loadingDrink, setLoadingDrink] = useState(true);
+  const [loadingNote, setLoadingNote] = useState(true);
+
   const [now, setNow] = useState(Timestamp.now());
 
   useEffect(() => {
@@ -34,7 +40,7 @@ const HomeScreen = () => {
         const userSnap = await getDoc(userDocRef);
         if (userSnap.exists()) {
           const data = userSnap.data();
-          setUsername(data.username || 'User');
+          setUsername((data && (data as any).username) || 'User');
         } else {
           setUsername('User');
         }
@@ -47,11 +53,12 @@ const HomeScreen = () => {
     fetchUsername();
   }, []);
 
-  // Real-time listener for last drink timestamp (only the latest date will show)
+  // Real-time listener for last drink (latest doc) - captures motivation field too
   useEffect(() => {
     const user = auth.currentUser;
     if (!user) {
       setLastDrink(null);
+      setLastDrinkMotivation(null);
       setLoadingDrink(false);
       return;
     }
@@ -67,16 +74,62 @@ const HomeScreen = () => {
       q,
       (snapshot) => {
         if (!snapshot.empty) {
-          setLastDrink(snapshot.docs[0].data().timestamp as Timestamp);
+          const d = snapshot.docs[0].data() as any;
+          setLastDrink(d.timestamp ?? null);
+          setLastDrinkMotivation(d.motivation ?? null);
         } else {
           setLastDrink(null);
+          setLastDrinkMotivation(null);
         }
         setLoadingDrink(false);
       },
       (error) => {
         console.error('Error fetching last drink:', error);
         setLastDrink(null);
+        setLastDrinkMotivation(null);
         setLoadingDrink(false);
+      }
+    );
+
+    return () => unsubscribe();
+  }, []);
+
+  // Real-time listener for last note (latest doc) to get mood
+  useEffect(() => {
+    const user = auth.currentUser;
+    if (!user) {
+      setLastNoteMood(null);
+      setLoadingNote(false);
+      return;
+    }
+
+    const q = query(
+      collection(db, 'notes'),
+      where('userId', '==', user.uid),
+      orderBy('timestamp', 'desc'),
+      limit(1)
+    );
+
+    const unsubscribe = onSnapshot(
+      q,
+      (snapshot) => {
+        if (!snapshot.empty) {
+          const d = snapshot.docs[0].data() as any;
+          const mood = (d.mood as string) ?? null;
+          if (mood === 'happy' || mood === 'normal' || mood === 'sad') {
+            setLastNoteMood(mood);
+          } else {
+            setLastNoteMood(null);
+          }
+        } else {
+          setLastNoteMood(null);
+        }
+        setLoadingNote(false);
+      },
+      (error) => {
+        console.error('Error fetching last note:', error);
+        setLastNoteMood(null);
+        setLoadingNote(false);
       }
     );
 
@@ -87,7 +140,7 @@ const HomeScreen = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       setNow(Timestamp.now());
-    }, 60 * 1000); // every minute
+    }, 60 * 1000); // Every minute
 
     return () => clearInterval(interval);
   }, []);
@@ -105,7 +158,8 @@ const HomeScreen = () => {
       );
     }
 
-    const diffSeconds = now.seconds - lastDrink.seconds;
+    // note: lastDrink is a Timestamp
+    const diffSeconds = now.seconds - (lastDrink?.seconds ?? 0);
     const days = Math.floor(diffSeconds / 86400);
     const hours = Math.floor((diffSeconds % 86400) / 3600);
     const minutes = Math.floor((diffSeconds % 3600) / 60);
@@ -126,22 +180,15 @@ const HomeScreen = () => {
 
       {renderSoberCard()}
 
-      <View style={styles.messageCard}>
-        <View style={styles.messageRow}>
-          <Ionicons name="happy-outline" size={32} color="#FFF9FB" style={styles.messageIcon} />
-          <Text style={styles.messageText}>
-            This is a really good start!{"\n"}Let’s keep going!
-          </Text>
-        </View>
-      </View>
-
-      <View style={styles.messageCardSecond}>
-        <Text style={styles.messageTextSecond}>
-          Let’s go on a walk today!{"\n"}
-          Keeping busy is always good for you.{"\n"}
-          You can invite a friend to join you.
-        </Text>
-      </View>
+      {/* Encouragement component */}
+      <EncouragementCard
+        lastDrink={lastDrink}
+        lastNoteMood={lastNoteMood}
+        lastDrinkMotivation={lastDrinkMotivation}
+        now={now}
+        loadingDrink={loadingDrink}
+        loadingNote={loadingNote}
+      />
 
       <View style={styles.feedbackCard}>
         <Text style={styles.feedbackText}>How do you feel about this?</Text>
@@ -191,9 +238,10 @@ const styles = StyleSheet.create({
   soberCard: {
     backgroundColor: '#FCDCE4',
     borderRadius: 20,
-    padding: 20,
+    padding: 25,
     alignItems: 'center',
     marginBottom: 16,
+    marginTop: 20,
   },
   soberText: {
     fontSize: 14,
@@ -217,41 +265,10 @@ const styles = StyleSheet.create({
     color: '#721C24',
     fontWeight: 'bold',
   },
-  messageCard: {
-    backgroundColor: '#F25077',
-    borderRadius: 20,
-    padding: 20,
-    marginBottom: 16,
-  },
-  messageRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  messageIcon: {
-    marginRight: 12,
-  },
-  messageText: {
-    color: '#FFF9FB',
-    fontSize: 15,
-    fontWeight: '500',
-    flexWrap: 'wrap',
-  },
-  messageCardSecond: {
-    backgroundColor: '#F25077',
-    borderRadius: 20,
-    padding: 20,
-    marginBottom: 16,
-  },
-  messageTextSecond: {
-    color: '#FFF9FB',
-    fontSize: 15,
-    fontWeight: '500',
-    flexWrap: 'wrap',
-  },
   feedbackCard: {
     backgroundColor: '#FCDCE4',
     borderRadius: 20,
-    padding: 20,
+    padding: 30,
     marginBottom: 16,
   },
   feedbackText: {
