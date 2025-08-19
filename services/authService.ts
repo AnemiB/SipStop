@@ -62,7 +62,6 @@ export const getUserInfo = () => {
   return auth.currentUser ?? null;
 };
 
-// Small helper to subscribe to auth changes (returns unsubscribe)
 export const onAuthStateChanged = (cb: (user: User | null) => void) => {
   return rnOnAuthStateChanged(auth, cb);
 };
