@@ -191,11 +191,7 @@ During development, SipStop needed to meet three key challenges:
 ### Custom UI
 
 * **Color Palette**
-
-  * Primary warm accent: `#F25077` (pink/rose)
-  * Accent deep: `#A93853`
-  * Background: `#FFF9FB`
-  * Card / note background: `#FCDCE4`
+Shades and tints of #F25077
 
 ---
 
