@@ -53,7 +53,7 @@ SipStop helps people track sober streaks, reflect with mood-tagged notes, and sh
 - **Expo** ~53.0.20
 - **TypeScript**
 - **Firebase** ^12.1.0 (Auth, Firestore, Storage)
-- **react-native-svg** ^15.12.1 (SVG mood icons)
+- **react-native-svg** ^15.12.1 (SVG nav icons)
 - **react-navigation** (native-stack) @ ^7.3.23
 - Other notable libraries:
   - `@react-native-async-storage/async-storage` ^1.24.0
