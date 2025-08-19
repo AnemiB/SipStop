@@ -8,7 +8,7 @@ A friendly sobriety-tracking app; log drinks, save mood notes with emoji, track 
 ![GitHub top language](https://img.shields.io/github/languages/top/AnemiB/SipStop)
 
 <p align="center">
-  <img src="assets/logo.png" alt="SipStop logo" width="220" />
+  <img src="/assets/Logo.png" alt="SipStop logo" width="220" />
 </p>
 
 <p align="center">
