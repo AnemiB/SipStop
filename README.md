@@ -153,11 +153,28 @@ SipStop is designed to be calm, supportive, and easy to use. Below are the desig
 
 ### Concept Process
 
-#### Ideation
+#### Ideation & Challenges
 
 * Focused on low-friction logging: a fast way to log a drink and a short reflection note.
 * Encouragement-first UX: gentle copy and personalized messages based on recent activity and note mood.
 * Community support: allow users to see community notes and leave supportive comments.
+
+During development, SipStop needed to meet three key challenges:
+
+1. **One-Colour Theme (Pink)**
+
+   * *Challenge*: The UI had to rely on a single primary colour, which can risk feeling flat or overwhelming.
+   * *Solution*: We designed with a pink palette, using those shades and tints. This kept the design consistent while still calming and readable.
+
+2. **Real-Time Data**
+
+   * *Challenge*: The app required real-time updates for notes, drink logs, and community content, so users always see the latest data.
+   * *Solution*: We integrated Firebase Firestore listeners, ensuring instant updates when a user adds a note, logs a drink, or posts in the community. No manual refresh needed.
+
+3. **Break a Habit**
+
+   * *Challenge*: The goal wasn’t just tracking, it was supporting sobriety and reducing alcohol intake without being judgmental and being able to offer a safe space for this.
+   * *Solution*: We implemented a sober time tracker (since last drink), encouragement cards with supportive messages, and mood-tagged reflection notes. This combination helps users stay motivated and build healthier habits over time.
 
 #### ER Diagram
 
