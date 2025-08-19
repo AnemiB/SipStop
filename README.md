@@ -1,4 +1,3 @@
-# SipStop
 A friendly sobriety-tracking app; log drinks, save mood notes with emoji, track your sober time, and support each other.
 
 ![GitHub repo size](https://img.shields.io/github/repo-size/AnemiB/SipStop)
@@ -23,19 +22,42 @@ A friendly sobriety-tracking app; log drinks, save mood notes with emoji, track 
 
 ## Table of Contents
 
-- [About the Project](#about-the-project)  
-- [Built With](#built-with)  
-- [Getting Started](#getting-started)  
-  - [Prerequisites](#prerequisites)  
-  - [Install & Run](#install--run)  
-- [App Features](#app-features)  
-- [Design & Concept](#design--concept)  
-- [Development Notes & Gotchas](#development-notes--gotchas)  
-- [Testing](#testing)  
-- [Future Work](#future-work)  
-- [Contributing](#contributing)  
-- [License](#license)  
-- [Contact](#contact)
+* [About the Project](#about-the-project)
+* [Built With](#built-with)
+* [Getting Started](#getting-started)
+
+  * [Prerequisites](#prerequisites)
+  * [Install & Run](#install--run)
+* [App Features](#app-features)
+* [Design & Concept](#design--concept)
+
+  * [Concept Process](#concept-process)
+
+    * [Ideation](#ideation)
+    * [ER Diagram](#er-diagram)
+    * [Wireframes](#wireframes)
+  * [Custom UI](#custom-ui)
+* [Development Process](#development-process)
+
+  * [Implementation Process](#implementation-process)
+
+    * [Frontend](#frontend)
+    * [Backend / Persistence](#backend--persistence)
+    * [DevOps & Tooling](#devops--tooling)
+  * [Highlights](#highlights)
+  * [Challenges](#challenges)
+  * [Future Implementation](#future-implementation)
+* [Final Outcome](#final-outcome)
+
+  * [Mockups](#mockups)
+  * [Video Demonstration](#video-demonstration)
+* [Conclusion](#conclusion)
+* [License](#license)
+* [Contact](#contact)
+* [Responsibilities](#responsibilities)
+* [Acknowledgements](#acknowledgements)
+* [Troubleshooting Quicklinks](#troubleshooting-quicklinks)
+* [Git commands to commit & push README](#git-commands-to-commit--push-readme)
 
 ---
 
@@ -43,39 +65,45 @@ A friendly sobriety-tracking app; log drinks, save mood notes with emoji, track 
 
 SipStop helps people track sober streaks, reflect with mood-tagged notes, and share encouragement via a small community. Built with React Native (Expo) and Firebase, the app focuses on simple logging, gentle encouragement and reflection.
 
+---
 
 ## Built With
 
-- **React Native (Expo)** — cross-platform mobile app
-- **React** 19.0.0
-- **React Native** 0.79.5
-- **Expo** ~53.0.20
-- **TypeScript**
-- **Firebase** ^12.1.0 (Auth, Firestore, Storage)
-- **react-native-svg** ^15.12.1 (SVG mood icons)
-- **react-navigation** (native-stack) @ ^7.3.23
-- Other notable libraries:
-  - `@react-native-async-storage/async-storage` ^1.24.0
-  - `@react-native-community/datetimepicker` ^8.4.2
-  - `@react-native-picker/picker` ^2.11.1
-  - `react-native-toast-message` ^2.3.3
+* **React Native (Expo)** — cross-platform mobile app
+* **React** 19.0.0
+* **React Native** 0.79.5
+* **Expo** \~53.0.20
+* **TypeScript**
+* **Firebase** ^12.1.0 (Auth, Firestore, Storage)
+* **react-native-svg** ^15.12.1 (SVG mood icons)
+* **react-navigation** (native-stack) @ ^7.3.23
+
+Other notable libraries:
+
+* `@react-native-async-storage/async-storage` ^1.24.0
+* `@react-native-community/datetimepicker` ^8.4.2
+* `@react-native-picker/picker` ^2.11.1
+* `react-native-toast-message` ^2.3.3
+
+---
 
 ## Getting Started
 
 ### Prerequisites
 
-- Node.js (v16+)
-- npm or yarn
-- Expo CLI (optional but recommended): `npm install -g expo-cli`
-- Android Studio or Xcode if you want to run on emulator / build natively
+* Node.js (v16+)
+* npm or yarn
+* Expo CLI (optional but recommended): `npm install -g expo-cli`
+* Android Studio or Xcode if you want to run on emulator / build natively
 
 ### Install & Run (local dev)
 
 1. Clone the repo:
+
 ```bash
 git clone https://github.com/AnemiB/SipStop.git
 cd SipStop
-````
+```
 
 2. Install dependencies:
 
@@ -85,7 +113,7 @@ npm install
 yarn
 ```
 
-3. Add your Firebase config, create `.env` or configure `firebase.ts` depending on your project structure. Example env vars:
+3. Add your Firebase config — create `.env` or configure `firebase.ts` depending on your project structure. Example env vars:
 
 ```
 FIREBASE_API_KEY=REPLACE_ME
@@ -122,29 +150,117 @@ Open with Expo Go on your phone or run in an emulator.
 
 ## Design & Concept
 
-* Mood-tagged notes that map to `happy`, `normal`, `sad` categories.
-* Goal-based encouragement messages (1 week / 1 month / 3 months / etc.).
-* Calm colour palette and gentle microcopy to avoid triggering users — UX designed to be supportive, not judgmental.
+SipStop is designed to be calm, supportive, and easy to use. Below are the design thinking and artifacts.
+
+### Concept Process
+
+#### Ideation
+
+* Focused on low-friction logging: a fast way to log a drink and a short reflection note.
+* Encouragement-first UX: gentle copy and personalized messages based on recent activity and note mood.
+* Community support: allow users to see community notes and leave supportive comments.
+
+#### ER Diagram
+
+> **Placeholder** — add your ER diagram here when ready.
+> `![ER Diagram placeholder](/assets/placeholder-er-diagram.png)`
+> *(Replace `/assets/placeholder-er-diagram.png` with your diagram file.)*
+
+#### Wireframes
+
+> **Placeholder** — add wireframe images exported from Figma.
+> `![Wireframes placeholder](/assets/placeholder-wireframes.png)`
+> *(Replace with real wireframes later.)*
+
+### Custom UI
+
+* **Color Palette (suggested)**
+
+  * Primary warm accent: `#F25077` (pink/rose)
+  * Accent deep: `#A93853`
+  * Background: `#FFF9FB`
+  * Card / note background: `#FCDCE4`
+
+* **Typography**
+
+  * Headings: `Poppins` (or similar friendly rounded display)
+  * Body: `Roboto` (readable neutral body font)
+
+* **Mood icons** — SVGs for emoji-like moods (`happy`, `normal`, `sad`) used throughout the app.
 
 ---
 
-## Future Work
+## Development Process
 
-* Offline support & local caching for notes
-* More community features (likes, threaded comments, anonymity toggle)
-* Export streak reports (CSV / shareable badges)
-* Mobile build pipelines (Play Store / App Store)
+### Implementation Process
+
+#### Frontend
+
+* Built with Expo + React Native + TypeScript.
+* Navigation structure: conditional stacks in `App.tsx` that render *Auth* vs *App* stacks based on `onAuthStateChanged`.
+* Screens:
+
+  * `Splash`, `LogIn`, `SignUp` (Auth stack)
+  * `Home`, `Create`, `Community`, `Settings`, `Drinks` (App stack)
+* SVG handling: `react-native-svg-transformer` for importing SVGs as components.
+
+#### Backend / Persistence
+
+* Firebase used for authentication and Firestore for notes and drinks.
+* Consider using the Firebase Emulator Suite locally for integration testing before deploying to production.
+
+#### DevOps & Tooling
+
+* Expo for development & testing.
+* Metro / packager caching caveats: sometimes requires `expo start -c` or `npx react-native start --reset-cache`.
+* Recommended local development flow:
+
+  * `npm run lint` (if configured)
+  * `npm test` (Jest unit tests)
+
+### Highlights
+
+* Dynamic encouragement messaging engine that adapts to last drink time, mood, and goal progress.
+* Mood-tagged notes with emoji selection implemented using SVG components.
+* Simple, minimal UI that’s fast to use for on-the-fly logging.
+
+### Challenges
+
+* React Navigation stack switching: when `onAuthStateChanged` flips `isLoggedIn`, the mounted navigator changes. Avoid `navigation.navigate('LogIn')` in those flows — it will throw route-not-found warnings. Use `navigation.goBack()` or rely on the auth listener.
+* SVG `key`-spread warnings: ensure you render imported SVGs as components (`const Icon = HappyOne; <Icon />`) and don’t spread an element’s props directly into `<Svg />`.
+* Handling password updates with Firebase requires re-authentication in some cases — account for that in the Settings screen.
+
+### Future Implementation
+
+* Offline support & local caching for notes.
+* More community features (likes, threaded comments, anonymity toggle).
+* Export streak reports (CSV / shareable badges).
+* Mobile store builds & release pipeline (Play Store / App Store).
 
 ---
 
-## Contributing
+## Final Outcome
 
-1. Fork the repo.
-2. Create a branch: `git checkout -b feature/my-feature`
-3. Commit changes and push.
-4. Open a Pull Request.
+### Mockups
 
-Please follow TypeScript, linting and commit conventions.
+> **Placeholders** — replace with exported mockup images.
+
+* `![Mockup 1 placeholder](/assets/placeholder-mockup-1.png)`
+* `![Mockup 2 placeholder](/assets/placeholder-mockup-2.png)`
+* `![Mockup 3 placeholder](/assets/placeholder-mockup-3.png)`
+
+### Video Demonstration
+
+> **Placeholders** — replace with your demo URLs (Google Drive / Vimeo / YouTube).
+
+* [View Demonstration (placeholder)](REPLACE_ME_VIDEO_LINK)
+* [Short Feature Demo (placeholder)](REPLACE_ME_VIDEO_LINK_2)
+
+---
+
+## Conclusion
+
+SipStop delivers a focused, empathetic tool for tracking sobriety progress and reflecting through mood-tagged notes. The app balances simple functionality (fast logging) with supportive UX (encouragement messages and community support).
 
 ---
 
@@ -161,36 +277,12 @@ GitHub: [AnemiB](https://github.com/AnemiB)
 
 ---
 
-## Troubleshooting Quicklinks (copy/paste)
+## Acknowledgements
 
-* Reset Expo cache:
+* Figma for wireframing and mockups.
+* react-native-svg and react-native-svg-transformer for SVG handling.
+* Expo / React Native / Firebase open-source projects.
+* The open-source community and contributors.
 
-```bash
-expo start -c
-```
 
-* Common repo searches:
-
-```bash
-# find explicit navigation calls to LogIn
-rg "navigate\\('LogIn'\\)" || rg "navigate\\(\"LogIn\"\\)"
-
-# find cloneElement usage and svg prop spreads
-rg "cloneElement" || rg "<Svg \\{\\.\\.\\." || rg "React\\.cloneElement"
-```
----
-
-## Git commands to commit & push README (copy & paste)
-
-```bash
-# from repo root
-git checkout -b docs/add-readme
-# create README.md (paste the content above into it)
-git add README.md
-git commit -m "docs: add project README for SipStop"
-git push origin docs/add-readme
-````
-
-Then open a Pull Request on GitHub from branch `docs/add-readme` → `main` (or `master`), review and merge.
-
-Which one do you want next, pookie? 💜
+Which one next, pookie? 💜
