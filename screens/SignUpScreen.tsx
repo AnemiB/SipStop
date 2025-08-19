@@ -3,9 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, SafeAreaView, Aler
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../types';
-import { auth, db } from '../firebase';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
+import { registerUser } from '../services/authService';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'SignUp'>;
 
@@ -17,27 +15,33 @@ const SignUpScreen = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
-  // Password handling
   const handleSignUp = async () => {
     if (password !== confirmPassword) {
-      Alert.alert("Error", "Passwords do not match");
+      Alert.alert('Error', 'Passwords do not match');
       return;
     }
     try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
-
-      await setDoc(doc(db, "users", user.uid), {
-        email: email,
-        username: username,
-        lastDrinkDate: null,
-        createdAt: serverTimestamp()
-      });
-
-      Alert.alert("Success", "Account created!");
-      navigation.navigate('LogIn');
+      const res = await registerUser(username, email, password);
+      if (res.user) {
+        // Render the appropriate (logged-in) stack automatically.
+        Alert.alert('Success', 'Account created!');
+        setUsername('');
+        setEmail('');
+        setPassword('');
+        setConfirmPassword('');
+      } else {
+        Alert.alert('Error', res.error?.message ?? 'Registration failed');
+      }
     } catch (error: any) {
-      Alert.alert("Error", error.message);
+      Alert.alert('Error', error.message);
+    }
+  };
+
+  const handleGoToLogin = () => {
+    if (navigation.canGoBack()) {
+      navigation.goBack();
+    } else {
+      Alert.alert('Info', 'Please use the login entry point to sign in.');
     }
   };
 
@@ -64,7 +68,7 @@ const SignUpScreen = () => {
         <Text style={styles.signupButtonText}>Sign Up</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.loginButton} onPress={() => navigation.navigate('LogIn')}>
+      <TouchableOpacity style={styles.loginButton} onPress={handleGoToLogin}>
         <Text style={styles.loginButtonText}>Log In</Text>
       </TouchableOpacity>
     </SafeAreaView>

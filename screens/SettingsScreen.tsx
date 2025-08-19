@@ -5,9 +5,10 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../types';
 
-import { auth, db } from '../firebase';
-import { signOut, updatePassword } from 'firebase/auth';
+import { db } from '../firebase';
+import { updatePassword } from 'firebase/auth';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
+import { logoutUser, getUserInfo } from '../services/authService';
 
 const { height } = Dimensions.get('window');
 
@@ -23,7 +24,7 @@ const SettingsScreen = () => {
 
   useEffect(() => {
     const fetchUsername = async () => {
-      const user = auth.currentUser;
+      const user = getUserInfo(); // use service helper
       if (!user) return;
 
       try {
@@ -33,7 +34,7 @@ const SettingsScreen = () => {
           setUsername(data.username || '');
         }
       } catch (error) {
-        console.error("Error fetching user data:", error);
+        console.error('Error fetching user data:', error);
       }
     };
 
@@ -41,7 +42,7 @@ const SettingsScreen = () => {
   }, []);
 
   const handleSave = async () => {
-    const user = auth.currentUser;
+    const user = getUserInfo();
     if (!user) return;
 
     try {
@@ -63,23 +64,24 @@ const SettingsScreen = () => {
 
       Alert.alert('Success', 'Profile updated!');
     } catch (error: any) {
-      console.error("Error updating settings:", error);
+      console.error('Error updating settings:', error);
       Alert.alert('Update failed', error.message);
     }
   };
 
-  const handleSignOut = async () => {
-    try {
-      await signOut(auth);
-      navigation.reset({
-        index: 0,
-        routes: [{ name: 'LogIn' }],
-      });
-    } catch (error: any) {
-      console.error("Sign out error:", error);
-      Alert.alert('Sign out failed', error.message);
+ const handleSignOut = async () => {
+  try {
+    const res = await logoutUser();
+    if (res.success) {
+      // Firebase auth listener in App.tsx will handle redirect
+    } else {
+      throw res.error;
     }
-  };
+  } catch (error: any) {
+    console.error('Sign out error:', error);
+    Alert.alert('Sign out failed', error.message ?? 'Unknown error');
+  }
+};
 
   return (
     <SafeAreaView style={styles.container}>

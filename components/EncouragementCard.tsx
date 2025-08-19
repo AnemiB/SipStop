@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { View, Text, ActivityIndicator, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, ActivityIndicator, StyleSheet } from 'react-native';
 import type { Timestamp } from 'firebase/firestore';
 
 // SVG imports
@@ -228,6 +228,7 @@ const EncouragementCard: React.FC<Props> = ({
     const IconComp = (pick(candidates, seed) as any) ?? NormalOne;
 
     setFixedMessage(selectedPhrase);
+    // store whatever we got (component type or element), render step will handle both safely
     setFixedIcon(hasNote ? IconComp : null);
     setCategoryAtChoose(category);
   }, [lastDrink?.seconds, lastNoteMood, lastDrinkMotivation, messagesOverride, loadingDrink, loadingNote, hasNote]);
@@ -262,17 +263,32 @@ const EncouragementCard: React.FC<Props> = ({
   const displayMessage = (fixedMessage ?? defaultMessages.default[0]) + (lastDrink ? dynamicSuffix : '');
   const showNotePrompt = hasNote === false && !loadingNote;
 
-  // TS-safe render: cloneElement cast to any to avoid strict unknown(jsx) props error. this is the case for the svg null for new users
   const renderIcon = () => {
     if (!IconCandidate) return null;
 
     if (React.isValidElement(IconCandidate)) {
-      return React.cloneElement(IconCandidate as React.ReactElement<any>, { width: 36, height: 36 } as any);
+      const elem = IconCandidate as React.ReactElement<any>;
+      const ElemType = elem.type as React.ComponentType<any>;
+      const elemProps = { ...(elem.props || {}) } as Record<string, any>;
+
+      // Remove any accidental 'key' prop that might be present in props
+      if ('key' in elemProps) delete elemProps.key;
+
+      // Render the underlying component type directly with sanitized props
+      return <ElemType {...elemProps} width={36} height={36} />;
     }
 
     if (typeof IconCandidate === 'function') {
       const Comp = IconCandidate as React.ComponentType<any>;
       return <Comp width={36} height={36} />;
+    }
+
+    if (IconCandidate && typeof IconCandidate === 'object' && (IconCandidate as any).type) {
+      const like = IconCandidate as any;
+      const ElemType = like.type as React.ComponentType<any>;
+      const elemProps = { ...(like.props || {}) } as Record<string, any>;
+      if ('key' in elemProps) delete elemProps.key;
+      return <ElemType {...elemProps} width={36} height={36} />;
     }
 
     return null;

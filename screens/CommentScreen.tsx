@@ -96,7 +96,7 @@ const CommentScreen = () => {
     return () => unsubscribe();
   }, [noteId]);
 
-  // Keyboard animation - always moves with keyboard
+  // Keyboard animation; always moves with keyboard
   useEffect(() => {
     const showSub = Keyboard.addListener('keyboardDidShow', e => {
       Animated.timing(keyboardHeight, {

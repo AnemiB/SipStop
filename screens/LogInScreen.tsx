@@ -3,8 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, SafeAreaView, Aler
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../types';
-import { auth } from '../firebase';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { loginUser } from '../services/authService';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'LogIn'>;
 
@@ -16,14 +15,22 @@ const LogInScreen = () => {
 
   const handleLogIn = async () => {
     try {
-      await signInWithEmailAndPassword(auth, email, password);
-      Alert.alert("Success", "Logged in successfully!");
-      navigation.navigate('Home');
+      const res = await loginUser(email, password);
+      if (res.user) {
+        Alert.alert('Success', 'Logged in successfully!');
+      } else {
+        let message = 'Login failed';
+        const code = res.error?.code;
+        if (code === 'auth/user-not-found') message = 'No account found with this email';
+        if (code === 'auth/wrong-password') message = 'Incorrect password';
+        if (res.error?.message) message = res.error.message;
+        Alert.alert('Error', message);
+      }
     } catch (error: any) {
-      let message = "Login failed";
-      if (error.code === "auth/user-not-found") message = "No account found with this email";
-      if (error.code === "auth/wrong-password") message = "Incorrect password";
-      Alert.alert("Error", message);
+      let message = 'Login failed';
+      if (error.code === 'auth/user-not-found') message = 'No account found with this email';
+      if (error.code === 'auth/wrong-password') message = 'Incorrect password';
+      Alert.alert('Error', message);
     }
   };
 
