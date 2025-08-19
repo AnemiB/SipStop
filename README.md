@@ -68,7 +68,7 @@ SipStop helps people track sober streaks, reflect with mood-tagged notes, and sh
 
 ## Built With
 
-* **React Native (Expo)** — cross-platform mobile app
+* **React Native (Expo)** cross-platform mobile app
 * **React** 19.0.0
 * **React Native** 0.79.5
 * **Expo** \~53.0.20
@@ -112,7 +112,7 @@ npm install
 yarn
 ```
 
-3. Add your Firebase config — create `.env` or configure `firebase.ts` depending on your project structure. Example env vars:
+3. Add your Firebase config, create `.env` or configure `firebase.ts` depending on your project structure. Example env vars:
 
 ```
 FIREBASE_API_KEY=REPLACE_ME
@@ -153,32 +153,41 @@ SipStop is designed to be calm, supportive, and easy to use. Below are the desig
 
 ### Concept Process
 
-#### Ideation
+#### Ideation & Challenges
 
 * Focused on low-friction logging: a fast way to log a drink and a short reflection note.
 * Encouragement-first UX: gentle copy and personalized messages based on recent activity and note mood.
 * Community support: allow users to see community notes and leave supportive comments.
 
+During development, SipStop needed to meet three key challenges:
+
+1. **One-Colour Theme (Pink)**
+
+   * *Challenge*: The UI had to rely on a single primary colour, which can risk feeling flat or overwhelming.
+   * *Solution*: We designed with a pink palette, using those shades and tints. This kept the design consistent while still calming and readable.
+
+2. **Real-Time Data**
+
+   * *Challenge*: The app required real-time updates for notes, drink logs, and community content, so users always see the latest data.
+   * *Solution*: We integrated Firebase Firestore listeners, ensuring instant updates when a user adds a note, logs a drink, or posts in the community. No manual refresh needed.
+
+3. **Break a Habit**
+
+   * *Challenge*: The goal wasn’t just tracking, it was supporting sobriety and reducing alcohol intake without being judgmental and being able to offer a safe space for this.
+   * *Solution*: We implemented a sober time tracker (since last drink), encouragement cards with supportive messages, and mood-tagged reflection notes. This combination helps users stay motivated and build healthier habits over time.
+
 #### ER Diagram
 
-> **Placeholder** — add your ER diagram here when ready.
-> `![ER Diagram placeholder](/assets/placeholder-er-diagram.png)`
-> *(Replace `/assets/placeholder-er-diagram.png` with your diagram file.)*
+> `![ER Diagram](/assets/ER%20Diagram.png)`
 
 #### Wireframes
 
-> **Placeholder** — add wireframe images exported from Figma.
-> `![Wireframes placeholder](/assets/placeholder-wireframes.png)`
-> *(Replace with real wireframes later.)*
+> `![Wireframes placeholder](/assets/AppWireframes.png)`
 
 ### Custom UI
 
 * **Color Palette**
-
-  * Primary warm accent: `#F25077` (pink/rose)
-  * Accent deep: `#A93853`
-  * Background: `#FFF9FB`
-  * Card / note background: `#FCDCE4`
+Shades and tints of #F25077
 
 ---
 
@@ -218,9 +227,9 @@ SipStop is designed to be calm, supportive, and easy to use. Below are the desig
 
 ### Challenges
 
-* React Navigation stack switching: when `onAuthStateChanged` flips `isLoggedIn`, the mounted navigator changes. Avoid `navigation.navigate('LogIn')` in those flows — it will throw route-not-found warnings. Use `navigation.goBack()` or rely on the auth listener.
+* React Navigation stack switching: when `onAuthStateChanged` flips `isLoggedIn`, the mounted navigator changes. Avoid `navigation.navigate('LogIn')` in those flows, it will throw route-not-found warnings. Use `navigation.goBack()` or rely on the auth listener.
 * SVG `key`-spread warnings: ensure you render imported SVGs as components (`const Icon = HappyOne; <Icon />`) and don’t spread an element’s props directly into `<Svg />`.
-* Handling password updates with Firebase requires re-authentication in some cases — account for that in the Settings screen.
+* Handling password updates with Firebase requires re-authentication in some cases, account for that in the Settings screen.
 
 ### Future Implementation
 
@@ -235,7 +244,7 @@ SipStop is designed to be calm, supportive, and easy to use. Below are the desig
 
 ### Mockups
 
-> **Placeholders** — replace with exported mockup images.
+> **Placeholders** replace with exported mockup images.
 
 * `![Mockup 1 placeholder](/assets/placeholder-mockup-1.png)`
 * `![Mockup 2 placeholder](/assets/placeholder-mockup-2.png)`
@@ -243,7 +252,7 @@ SipStop is designed to be calm, supportive, and easy to use. Below are the desig
 
 ### Video Demonstration
 
-> **Placeholders** — replace with your demo URLs (Google Drive / Vimeo / YouTube).
+> **Placeholders** replace with your demo URLs (Google Drive / Vimeo / YouTube).
 
 * [View Demonstration (placeholder)](REPLACE_ME_VIDEO_LINK)
 * 
@@ -263,7 +272,7 @@ Distributed under the MIT License. See `LICENSE` for details.
 
 ## Contact
 
-**Anemi Breytenbach** — [231178@virtualwindow.co.za](mailto:231178@virtualwindow.co.za)
+**Anemi Breytenbach**, [231178@virtualwindow.co.za](mailto:231178@virtualwindow.co.za)
 GitHub: [AnemiB](https://github.com/AnemiB)
 
 ---
