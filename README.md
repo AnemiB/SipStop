@@ -1,5 +1,5 @@
 # SipStop
-> A friendly sobriety-tracking app — log drinks, save mood notes with emoji, track your sober time, and support each other.
+A friendly sobriety-tracking app; log drinks, save mood notes with emoji, track your sober time, and support each other.
 
 ![GitHub repo size](https://img.shields.io/github/repo-size/AnemiB/SipStop)
 ![GitHub watchers](https://img.shields.io/github/watchers/AnemiB/SipStop)
