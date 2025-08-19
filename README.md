@@ -1,5 +1,3 @@
-A friendly sobriety-tracking app; log drinks, save mood notes with emoji, track your sober time, and support each other.
-
 ![GitHub repo size](https://img.shields.io/github/repo-size/AnemiB/SipStop)
 ![GitHub watchers](https://img.shields.io/github/watchers/AnemiB/SipStop)
 ![GitHub language count](https://img.shields.io/github/languages/count/AnemiB/SipStop)
@@ -175,19 +173,12 @@ SipStop is designed to be calm, supportive, and easy to use. Below are the desig
 
 ### Custom UI
 
-* **Color Palette (suggested)**
+* **Color Palette**
 
   * Primary warm accent: `#F25077` (pink/rose)
   * Accent deep: `#A93853`
   * Background: `#FFF9FB`
   * Card / note background: `#FCDCE4`
-
-* **Typography**
-
-  * Headings: `Poppins` (or similar friendly rounded display)
-  * Body: `Roboto` (readable neutral body font)
-
-* **Mood icons** — SVGs for emoji-like moods (`happy`, `normal`, `sad`) used throughout the app.
 
 ---
 
@@ -255,8 +246,7 @@ SipStop is designed to be calm, supportive, and easy to use. Below are the desig
 > **Placeholders** — replace with your demo URLs (Google Drive / Vimeo / YouTube).
 
 * [View Demonstration (placeholder)](REPLACE_ME_VIDEO_LINK)
-* [Short Feature Demo (placeholder)](REPLACE_ME_VIDEO_LINK_2)
-
+* 
 ---
 
 ## Conclusion
@@ -284,6 +274,3 @@ GitHub: [AnemiB](https://github.com/AnemiB)
 * react-native-svg and react-native-svg-transformer for SVG handling.
 * Expo / React Native / Firebase open-source projects.
 * The open-source community and contributors.
-
-
-Which one next, pookie? 💜
