@@ -178,11 +178,12 @@ During development, SipStop needed to meet three key challenges:
 
 #### ER Diagram
 
-> `![ER Diagram](/assets/ER%20Diagram.png)`
+<img src="/assets/ER Diagram.png" alt="ER Diagram" style="width:70%; height:auto;" />
 
 #### Wireframes
 
-> `![Wireframes placeholder](/assets/AppWireframes.png)`
+<img src="/assets/AppWireframes.png" alt="Wireframes placeholder" style="width:70%; height:auto;" />
+
 
 ### Custom UI
 
