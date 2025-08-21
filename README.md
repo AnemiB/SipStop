@@ -182,7 +182,7 @@ During development, SipStop needed to meet three key challenges:
 
 #### Wireframes
 
-<img src="/assets/AppWireframes.png" alt="Wireframes placeholder" style="width:70%; height:auto;" />
+<img src="/assets/AppWireframes.png" alt="Wireframes" style="width:70%; height:auto;" />
 
 
 ### Custom UI
@@ -247,9 +247,9 @@ Shades and tints of #F25077
 
 > **Placeholders** replace with exported mockup images.
 
-* `![Mockup 1 placeholder](/assets/placeholder-mockup-1.png)`
-* `![Mockup 2 placeholder](/assets/placeholder-mockup-2.png)`
-* `![Mockup 3 placeholder](/assets/placeholder-mockup-3.png)`
+<img src="/assets/Mockup 1.png" alt="Mockup One" style="width:70%; height:auto;" />
+<img src="/assets/Mockup 2.png" alt="Mockup Two" style="width:70%; height:auto;" />
+<img src="/assets/Mockup 3.png" alt="Mockup Three" style="width:70%; height:auto;" />
 
 ### Video Demonstration
 
