@@ -1,10 +1,10 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { SafeAreaView, View, Text, StyleSheet, ScrollView, TouchableOpacity, Dimensions, ActivityIndicator, Modal, FlatList, } from 'react-native';
+import { SafeAreaView, View, Text, StyleSheet, ScrollView, TouchableOpacity, Dimensions, ActivityIndicator, Modal, FlatList, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../types';
-import { collection, query, orderBy, onSnapshot, collectionGroup, where, limit, Timestamp, doc, getDocs, setDoc, serverTimestamp, } from 'firebase/firestore';
+import { collection, query, orderBy, onSnapshot, collectionGroup, where, limit, Timestamp, doc, getDocs, setDoc, serverTimestamp, deleteDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 import { getAuth } from 'firebase/auth';
 
@@ -50,7 +50,6 @@ const CommunityNotesScreen: React.FC = () => {
 
   // Keep track of when we started listening to avoid showing old comments
   const lastCheckedRef = useRef<number>(Date.now());
-
   const lastShownCommentIdRef = useRef<string | null>(null);
   const [lastViewedMap, setLastViewedMap] = useState<Record<string, number>>({});
   const [unseenNotesSet, setUnseenNotesSet] = useState<Set<string>>(new Set());
@@ -140,7 +139,6 @@ const CommunityNotesScreen: React.FC = () => {
         return 0;
       }
     }
-
     if (typeof c === 'number') {
       return c < 1e11 ? c * 1000 : c;
     }
@@ -148,7 +146,6 @@ const CommunityNotesScreen: React.FC = () => {
       const t = Date.parse(c);
       return isNaN(t) ? 0 : t;
     }
-
     return 0;
   };
 
@@ -166,51 +163,32 @@ const CommunityNotesScreen: React.FC = () => {
       commentsQuery,
       snapshot => {
         console.log('[comments] snapshot size:', snapshot.size);
-
         if (snapshot.empty) {
-          console.log('[comments] no comments for this user; clearing unseen set.');
           setUnseenNotesSet(new Set());
           return;
         }
-
-        // Debug dump first few docs fields can be inspected in Metro
-        snapshot.docs.slice(0, 6).forEach(d => console.log('[comments] doc:', d.id, d.data()));
-
         const newUnseen = new Set<string>();
-
         snapshot.docs.forEach(docSnap => {
           const data: any = docSnap.data();
           const noteId: string | undefined = data?.noteId;
-          if (!noteId) {
-            console.warn('[comments] doc missing noteId:', docSnap.id);
-            return;
-          }
-
+          if (!noteId) return;
           const createdAtMillis = getCreatedAtMillis(data);
-          if (!createdAtMillis) console.warn('[comments] createdAt missing/invalid in doc:', docSnap.id, data);
-
           const lastViewedMillis = lastViewedMap[noteId] ?? 0;
-
           if (createdAtMillis > lastViewedMillis) {
             newUnseen.add(noteId);
           }
         });
-
-        console.log('[comments] newUnseen:', Array.from(newUnseen));
         setUnseenNotesSet(prev => {
           const same = prev.size === newUnseen.size && Array.from(prev).every(v => newUnseen.has(v));
           if (same) return prev;
           return newUnseen;
         });
-
         const newestDoc = snapshot.docs[0];
         if (newestDoc) {
           const data: any = newestDoc.data();
           const createdAtMillis = getCreatedAtMillis(data) || 0;
-
           if (newestDoc.id !== lastShownCommentIdRef.current && createdAtMillis > lastCheckedRef.current) {
             lastShownCommentIdRef.current = newestDoc.id;
-            console.log('[comments] showing banner for comment', newestDoc.id);
             setNotif({
               visible: true,
               noteId: data.noteId,
@@ -220,13 +198,10 @@ const CommunityNotesScreen: React.FC = () => {
           }
         }
       },
-      err => {
-        console.warn('[comments] onSnapshot error:', err);
-      }
+      err => console.warn('[comments] onSnapshot error:', err)
     );
 
     lastCheckedRef.current = Date.now();
-
     return () => unsubscribe();
   }, [currentUser, lastViewedMap]);
 
@@ -235,6 +210,31 @@ const CommunityNotesScreen: React.FC = () => {
     await markNoteViewed(noteId);
     setModalVisible(false);
     navigation.navigate('Comment', { noteId });
+  };
+
+  // Delete note (only if current user owns it)
+  const handleDeleteNote = async (noteId: string, noteUserId: string) => {
+    if (!currentUser) return;
+    if (currentUser.uid !== noteUserId) return;
+    Alert.alert(
+      'Delete Note',
+      'Are you sure you want to delete this note?',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Delete',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              await deleteDoc(doc(db, 'notes', noteId));
+              console.log('Note deleted:', noteId);
+            } catch (err) {
+              console.error('Failed to delete note:', err);
+            }
+          },
+        },
+      ]
+    );
   };
 
   // Filter notes
@@ -276,22 +276,34 @@ const CommunityNotesScreen: React.FC = () => {
           {filteredNotes.map(note => {
             const moodOption = moodOptions.find(option => option.id === note.emojiId);
             const SvgIcon = moodOption ? moodOption.image : null;
-
             const hasUnseen = unseenNotesSet.has(note.id);
 
             return (
-              <TouchableOpacity key={note.id} style={styles.card} activeOpacity={0.8} onPress={() => openNoteAndMarkViewed(note.id)}>
-                <Text style={styles.user}>{note.username}</Text>
-                <View style={styles.contentRow}>
-                  {SvgIcon ? <SvgIcon width={32} height={32} style={styles.icon} /> : <Ionicons name="help-circle-outline" size={32} color="#A93853" style={styles.icon} />}
-                  <View style={styles.textBlock}>
-                    <Text style={styles.title}>{note.title}</Text>
-                    <Text style={styles.message}>{note.details}</Text>
+              <View key={note.id} style={styles.card}>
+                <TouchableOpacity activeOpacity={0.8} onPress={() => openNoteAndMarkViewed(note.id)}>
+                  <Text style={styles.user}>{note.username}</Text>
+                  <View style={styles.contentRow}>
+                    {SvgIcon ? (
+                      <SvgIcon width={32} height={32} style={styles.icon} />
+                    ) : (
+                      <Ionicons name="help-circle-outline" size={32} color="#A93853" style={styles.icon} />
+                    )}
+                    <View style={styles.textBlock}>
+                      <Text style={styles.title}>{note.title}</Text>
+                      <Text style={styles.message}>{note.details}</Text>
+                    </View>
+                    {hasUnseen ? <View style={styles.unseenDot} /> : null}
                   </View>
-                  {/* Small dot indicator on card for unseen comments */}
-                  {hasUnseen ? <View style={styles.unseenDot} /> : null}
-                </View>
-              </TouchableOpacity>
+                </TouchableOpacity>
+
+                {/* Delete button only if user owns note */}
+                {currentUser?.uid === note.userId && (
+                  <TouchableOpacity style={styles.deleteButton} onPress={() => handleDeleteNote(note.id, note.userId)}>
+                    <Ionicons name="trash" size={18} color="#fff" />
+                    <Text style={{ color: '#fff', marginLeft: 6 }}>Delete</Text>
+                  </TouchableOpacity>
+                )}
+              </View>
             );
           })}
         </ScrollView>
@@ -309,7 +321,6 @@ const CommunityNotesScreen: React.FC = () => {
           </TouchableOpacity>
         </View>
       ) : (
-        // small sign-in prompt if user logged out
         <TouchableOpacity style={styles.signInPrompt} onPress={() => navigation.navigate('Settings')}>
           <Ionicons name="log-in" size={20} color="#4A1D23" />
           <Text style={{ marginLeft: 6, color: '#4A1D23' }}>Sign in to see comments</Text>
@@ -449,8 +460,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 25,
   },
-
-  /* floating button */
   floatingWrapper: {
     position: 'absolute',
     right: 20,
@@ -505,14 +514,14 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
 
-  /* modal */
   modalBackdrop: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.35)',
+    backgroundColor: '#a938521e',
     justifyContent: 'flex-end',
+    marginBottom: 60.
   },
   modalCard: {
-    backgroundColor: '#fff',
+    backgroundColor: '#FFEFF2',
     padding: 18,
     borderTopLeftRadius: 14,
     borderTopRightRadius: 14,
@@ -540,6 +549,20 @@ const styles = StyleSheet.create({
     marginTop: 12,
     alignItems: 'center',
   },
+  deleteButton: {
+  backgroundColor: '#A93853',
+  padding: 8,
+  borderRadius: 12,
+  alignSelf: 'flex-end',
+  marginTop: 8,
+  flexDirection: 'row',
+  alignItems: 'center',
+  justifyContent: 'center',
+  shadowColor: '#000',
+  shadowOffset: { width: 0, height: 2 },
+  shadowOpacity: 0.1,
+  shadowRadius: 3,
+},
 });
 
 export default CommunityNotesScreen;

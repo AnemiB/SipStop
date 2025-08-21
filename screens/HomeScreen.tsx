@@ -5,6 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../types';
 import EncouragementCard from '../components/EncouragementCard';
+import OnboardingModal from '../components/OnboardingModal';
 
 import { auth, db } from '../firebase';
 import { collection, query, where, orderBy, limit, onSnapshot, doc, getDoc, Timestamp, } from 'firebase/firestore';
@@ -163,6 +164,7 @@ const HomeScreen = () => {
       );
     }
 
+
     // Note: lastDrink is a Timestamp
     const diffSeconds = now.seconds - (lastDrink?.seconds ?? 0);
     const days = Math.floor(diffSeconds / 86400);
@@ -184,7 +186,7 @@ const HomeScreen = () => {
       <Text style={styles.header}>Hello, {username || 'User'}!</Text>
 
       {renderSoberCard()}
-
+<OnboardingModal />
       {/* Encouragement component */}
       <EncouragementCard
         lastDrink={lastDrink}

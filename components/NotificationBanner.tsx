@@ -103,7 +103,6 @@ const NotificationBanner: React.FC<Props> = ({
           paddingVertical: 12,
           paddingHorizontal: 14,
           borderRadius: 12,
-          shadowColor: '#000',
           shadowOpacity: 0.18,
           shadowRadius: 8,
           elevation: 8,
