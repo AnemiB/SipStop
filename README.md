@@ -244,12 +244,9 @@ Shades and tints of #F25077
 ## Final Outcome
 
 ### Mockups
-
-> **Placeholders** replace with exported mockup images.
-
-<img src="/assets/Mockup 1.png" alt="Mockup One" style="width:70%; height:auto;" />
-<img src="/assets/Mockup 2.png" alt="Mockup Two" style="width:70%; height:auto;" />
-<img src="/assets/Mockup 3.png" alt="Mockup Three" style="width:70%; height:auto;" />
+<img src="/assets/Mockup 1.png" alt="Mockup One" style="width:60%; height:auto;" />
+<img src="/assets/Mockup 2.png" alt="Mockup Two" style="width:60%; height:auto;" />
+<img src="/assets/Mockup 3.png" alt="Mockup Three" style="width:60%; height:auto;" />
 
 ### Video Demonstration
 
