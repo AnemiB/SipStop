@@ -250,10 +250,8 @@ Shades and tints of #F25077
 
 ### Video Demonstration
 
-> **Placeholders** replace with your demo URLs (Google Drive / Vimeo / YouTube).
-
-* [View Demonstration](https://drive.google.com/file/d/19OFvHrMJAFHoBsOI9p94LwYC4__jtl1D/view?usp=sharing)
-* 
+[View Demonstration](https://drive.google.com/file/d/19OFvHrMJAFHoBsOI9p94LwYC4__jtl1D/view?usp=sharing)
+ 
 ---
 
 ## Conclusion
