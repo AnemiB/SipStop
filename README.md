@@ -7,7 +7,9 @@
 <p align="center">
   <img src="/assets/Logo.png" alt="SipStop logo" width="220" />
 </p>
+<p align="center">
 Break your drinking habit, one note at a time.
+</p>
 
 <p align="center">
   <a href="https://github.com/AnemiB/SipStop">Repository</a>
