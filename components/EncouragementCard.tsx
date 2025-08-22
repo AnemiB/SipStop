@@ -11,14 +11,14 @@ import SadOne from '../assets/SadOne.svg';
 import SadTwo from '../assets/SadTwo.svg';
 
 type Props = {
-  lastDrink: Timestamp | null;
+  lastDrink: Timestamp | { seconds?: number; nanoseconds?: number } | Date | number | null;
   lastNoteMood: 'happy' | 'normal' | 'sad' | null;
   lastDrinkMotivation: string | null;
-  now: Timestamp;
+  now: Timestamp | { seconds?: number; nanoseconds?: number } | Date | number;
   loadingDrink?: boolean;
   loadingNote?: boolean;
   messagesOverride?: any;
-  hasNote?: boolean; 
+  hasNote?: boolean;
   onAddNotePress?: () => void;
 };
 
@@ -155,6 +155,32 @@ function formatTimeAgo(diffMs: number) {
   return `${years} year${years === 1 ? '' : 's'} ago`;
 }
 
+/**
+ * Convert a variety of timestamp shapes to milliseconds (number) or null.
+ * Accepts:
+ * - number (ms)
+ * - Date
+ * - Firestore Timestamp (has toDate())
+ * - { seconds: number, nanoseconds?: number }
+ */
+function toMs(tsOrDateOrObj: any): number | null {
+  if (tsOrDateOrObj == null) return null;
+  if (typeof tsOrDateOrObj === 'number') return tsOrDateOrObj;
+  if (tsOrDateOrObj instanceof Date) return tsOrDateOrObj.getTime();
+  if (typeof tsOrDateOrObj.toDate === 'function') {
+    try {
+      return tsOrDateOrObj.toDate().getTime();
+    } catch {
+      return null;
+    }
+  }
+  if (typeof tsOrDateOrObj.seconds === 'number') {
+    const nanos = typeof tsOrDateOrObj.nanoseconds === 'number' ? tsOrDateOrObj.nanoseconds : 0;
+    return tsOrDateOrObj.seconds * 1000 + Math.floor(nanos / 1e6);
+  }
+  return null;
+}
+
 const EncouragementCard: React.FC<Props> = ({
   lastDrink,
   lastNoteMood,
@@ -187,8 +213,10 @@ const EncouragementCard: React.FC<Props> = ({
       return;
     }
 
-    const nowMs = Date.now();
-    const lastMs = lastDrink.toDate().getTime();
+    // Normalize now and lastDrink to milliseconds (defensive for when time is set at 0,0,0,)
+    const nowMs = toMs(now) ?? Date.now();
+    const lastMs = toMs(lastDrink) ?? nowMs;
+
     const diffMsAtChoose = Math.max(0, nowMs - lastMs);
     const diffDaysAtChoose = Math.floor(diffMsAtChoose / (1000 * 60 * 60 * 24));
 
@@ -220,36 +248,53 @@ const EncouragementCard: React.FC<Props> = ({
       selectedPhrase = pick(pool) ?? pick((messages as any).default);
     }
 
-    const seedBase = (lastDrink?.seconds ?? Math.floor(lastMs / 1000));
+    const seedBase = (typeof (lastDrink as any)?.seconds === 'number')
+      ? (lastDrink as any).seconds
+      : Math.floor(lastMs / 1000);
+
     const mood = lastNoteMood ?? 'normal';
     const moodCharSum = Array.from(mood).reduce((s, c) => s + c.charCodeAt(0), 0);
-    const seed = seedBase + moodCharSum;
+    const seed = (typeof seedBase === 'number' && !Number.isNaN(seedBase)) ? seedBase + moodCharSum : moodCharSum;
+
     const candidates = (moodAssetMap as any)[mood] ?? moodAssetMap.normal;
     const IconComp = (pick(candidates, seed) as any) ?? NormalOne;
 
     setFixedMessage(selectedPhrase);
-    // store whatever we got (component type or element), render step will handle both safely
     setFixedIcon(hasNote ? IconComp : null);
     setCategoryAtChoose(category);
-  }, [lastDrink?.seconds, lastNoteMood, lastDrinkMotivation, messagesOverride, loadingDrink, loadingNote, hasNote]);
+  }, [
+    (lastDrink as any)?.seconds,
+    (lastDrink as any)?.nanoseconds,
+    lastNoteMood,
+    lastDrinkMotivation,
+    messagesOverride,
+    loadingDrink,
+    loadingNote,
+    hasNote,
+    (now as any)?.seconds,
+    (now as any)?.nanoseconds,
+  ]);
 
   const dynamicSuffix = useMemo(() => {
     if (!lastDrink) return '';
-    const nowDate = now.toDate();
-    const lastDate = lastDrink.toDate();
-    const diffMs = Math.max(0, nowDate.getTime() - lastDate.getTime());
+    const nowMs = toMs(now) ?? Date.now();
+    const lastMs = toMs(lastDrink) ?? nowMs;
+    const diffMs = Math.max(0, nowMs - lastMs);
 
     const human = formatTimeAgo(diffMs);
 
     if (categoryAtChoose === 'relapse') {
       return ` You last had a drink ${human}.`;
     } else {
-      if (human === 'yesterday' || human === 'just now' || human.includes('hour') || human.includes('minute') || human.includes('second')) {
-        return ` You've been sober for ${human.replace(' ago', '')}.`;
-      }
       return ` You've been sober for ${human.replace(' ago', '')}.`;
     }
-  }, [now, lastDrink, categoryAtChoose]);
+  }, [
+    (now as any)?.seconds,
+    (now as any)?.nanoseconds,
+    (lastDrink as any)?.seconds,
+    (lastDrink as any)?.nanoseconds,
+    categoryAtChoose,
+  ]);
 
   if (loadingDrink || loadingNote) {
     return (
@@ -320,36 +365,36 @@ const styles = StyleSheet.create({
     padding: 25,
     marginBottom: 16,
   },
-  row: { 
-    flexDirection: 'row', 
-    alignItems: 'center' 
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center'
   },
-  iconWrapper: { 
-    marginRight: 12, 
-    width: 45, height: 44, 
-    justifyContent: 'center', 
-    alignItems: 'flex-start' 
+  iconWrapper: {
+    marginRight: 12,
+    width: 45, height: 44,
+    justifyContent: 'center',
+    alignItems: 'flex-start'
   },
-  placeholder: { 
-    justifyContent: 'center' 
+  placeholder: {
+    justifyContent: 'center'
   },
-  notePromptText: { 
-    color: '#FFF9FB', 
-    fontSize: 13, 
-    fontWeight: '600' 
+  notePromptText: {
+    color: '#FFF9FB',
+    fontSize: 13,
+    fontWeight: '600'
   },
-  addNoteCta: { 
-    marginTop: 6, 
-    backgroundColor: '#A93853', 
+  addNoteCta: {
+    marginTop: 6,
+    backgroundColor: '#A93853',
     borderRadius: 12 },
-  addNoteText: { 
-    color: '#FFF9FB', 
-    fontWeight: '700', 
+  addNoteText: {
+    color: '#FFF9FB',
+    fontWeight: '700',
     fontSize: 12 },
-  text: { 
-    color: '#FFF9FB', 
-    fontSize: 15, 
-    fontWeight: '500', 
+  text: {
+    color: '#FFF9FB',
+    fontSize: 15,
+    fontWeight: '500',
     flex: 1 },
 });
 
