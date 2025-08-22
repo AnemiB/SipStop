@@ -252,7 +252,7 @@ Shades and tints of #F25077
 
 > **Placeholders** replace with your demo URLs (Google Drive / Vimeo / YouTube).
 
-* [View Demonstration (placeholder)](REPLACE_ME_VIDEO_LINK)
+* [View Demonstration](https://drive.google.com/file/d/19OFvHrMJAFHoBsOI9p94LwYC4__jtl1D/view?usp=sharing)
 * 
 ---
 
