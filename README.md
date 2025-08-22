@@ -1,10 +1,8 @@
-<p align="center">
 ![GitHub repo size](https://img.shields.io/github/repo-size/AnemiB/SipStop)
 ![GitHub watchers](https://img.shields.io/github/watchers/AnemiB/SipStop)
 ![GitHub language count](https://img.shields.io/github/languages/count/AnemiB/SipStop)
 ![GitHub code size](https://img.shields.io/github/languages/code-size/AnemiB/SipStop)
 ![GitHub top language](https://img.shields.io/github/languages/top/AnemiB/SipStop)
-</p>
 
 <p align="center">
   <img src="/assets/Logo.png" alt="SipStop logo" width="220" />
