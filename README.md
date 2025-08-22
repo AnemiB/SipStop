@@ -14,7 +14,7 @@ A friendly sobriety-tracking app; log drinks, save mood notes with emoji, track 
   ·
   <a href="https://github.com/AnemiB/SipStop/issues">Report Bug / Request Feature</a>
   ·
-  <a href="https://github.com/AnemiB/SipStop/blob/main/README.md">Demo</a>
+  <a href="https://drive.google.com/file/d/19OFvHrMJAFHoBsOI9p94LwYC4__jtl1D/view?usp=sharing">Demo</a>
 </p>
 
 ---
