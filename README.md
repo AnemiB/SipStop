@@ -7,7 +7,7 @@
 <p align="center">
   <img src="/assets/Logo.png" alt="SipStop logo" width="220" />
 </p>
-A friendly sobriety-tracking app; log drinks, save mood notes with emoji, track your sober time, and support each other.
+Break your drinking habit, one note at a time.
 
 <p align="center">
   <a href="https://github.com/AnemiB/SipStop">Repository</a>
